@@ -26,7 +26,7 @@ func (h *Handle) Reg(ctx context.Context, rp xe.RegistryParam) error {
 	return err
 }
 
-func (h *Handle) Ta(ctx context.Context, tp xe.TriggerParam) error {
+func (h *Handle) SaveTarger(ctx context.Context, tp xe.TriggerParam) error {
 	kv := clientv3.NewKV(h.client)
 
 	var sb strings.Builder
@@ -34,6 +34,21 @@ func (h *Handle) Ta(ctx context.Context, tp xe.TriggerParam) error {
 	if err := enc.Encode(&tp); err != nil {
 		return err
 	}
-	kv.Put(ctx, "", sb.String())
-	return nil
+	_, err := kv.Put(ctx, "", sb.String())
+	return err
+}
+
+func (h *Handle) ListTarger(ctx context.Context) ([]xe.TriggerParam, error) {
+	kv := clientv3.NewKV(h.client)
+
+	resp, err := kv.Get(ctx, "")
+	if err != nil {
+		return nil, err
+	}
+
+	for _, v := range resp.Kvs {
+		json.Unmarshal(v.Value, nil)
+
+	}
+	return err
 }
