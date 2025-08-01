@@ -16,9 +16,10 @@ type taskHead struct {
 }
 
 type Task struct {
-	ID    int64
-	Name  string
-	Param TriggerParam
+	ID     string
+	ExecID string
+	Name   string
+	Param  TriggerParam
 
 	startTime int64
 	endTime   int64

@@ -18,8 +18,8 @@ type Doer interface {
 
 type Executor struct {
 	opts    Options
-	regList *taskList[string, taskHead] //注册任务列表
-	runList *taskList[int64, *Task]     //正在执行任务列表
+	regList *list[string, taskHead] //注册任务列表
+	runList *list[string, *Task]    //正在执行任务列表
 
 	middlewares []Middleware //中间件
 }
@@ -41,8 +41,8 @@ func NewExecutor(opts ...Option) *Executor {
 
 	return &Executor{
 		opts:    opt,
-		regList: newTaskHeadList(),
-		runList: newTaskList(),
+		regList: newList[string, taskHead](),
+		runList: newList[string, *Task](),
 	}
 
 }
@@ -79,21 +79,22 @@ func (e *Executor) runTask(w http.ResponseWriter, r *http.Request) {
 	e.opts.log.Info("任务参数", slog.Any("param", param))
 
 	//阻塞策略处理
-	if oldTask, ok := e.runList.Get(param.JobID); ok {
+	if oldTask, ok := e.runList.Get(param.ExecutorID); ok {
 		if param.ExecutorBlockStrategy == coverEarly { //覆盖之前调度
 			oldTask.cancel()
-			e.runList.Del(oldTask.ID)
+			e.runList.Del(oldTask.ExecID)
 		} else { //单机串行,丢弃后续调度 都进行阻塞
-			e.opts.log.Error("任务已经在运行了", slog.Int64("JobID", param.JobID), slog.String("executorHandler", param.ExecutorHandler))
+			e.opts.log.Error("任务已经在运行了", slog.String("JobID", param.JobID), slog.String("executorHandler", param.ExecutorHandler))
 			jsonTo(http.StatusOK, CallbackParamList{newCallback(param, FailureCode, "tasks already running")}, w)
 			return
 		}
 	}
 
 	task := &Task{
-		ID:    param.JobID,
-		Name:  param.ExecutorHandler,
-		Param: param,
+		ID:     param.JobID,
+		ExecID: param.ExecutorID,
+		Name:   param.ExecutorHandler,
+		Param:  param,
 
 		e: e,
 	}
@@ -106,17 +107,17 @@ func (e *Executor) runTask(w http.ResponseWriter, r *http.Request) {
 			task.ext, task.cancel = context.WithCancel(e.opts.rootCtx)
 		}
 	} else {
-		e.opts.log.Error("任务没有注册", slog.Int64("JobID", param.JobID), slog.String("executorHandler", param.ExecutorHandler))
+		e.opts.log.Error("任务没有注册", slog.String("JobID", param.JobID), slog.String("executorHandler", param.ExecutorHandler))
 		jsonTo(http.StatusInternalServerError, CallbackParamList{newCallback(param, FailureCode, "task not registred")}, w)
 		return
 	}
 
-	e.runList.Set(task.ID, task)
+	e.runList.Set(task.ExecID, task)
 	go task.run(func(code int, msg string) {
 		e.callback(task, code, msg)
 	})
-	e.opts.log.Info("任务开始执行", slog.Int64("JobID", param.JobID), slog.String("executorHandler", param.ExecutorHandler))
-	jsonTo(http.StatusOK, ReturnSuccess, w)
+	e.opts.log.Info("任务开始执行", slog.String("JobID", param.JobID), slog.String("executorHandler", param.ExecutorHandler))
+	jsonTo(http.StatusOK, Success("OK"), w)
 }
 
 // 删除一个任务
@@ -128,7 +129,7 @@ func (e *Executor) killTask(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	if task, ok := e.runList.LoadAndDel(param.JobID); ok {
+	if task, ok := e.runList.LoadAndDel(param.ExecutorID); ok {
 		task.cancel()
 		jsonTo(http.StatusOK, ReturnSuccess, w)
 		return
@@ -141,7 +142,7 @@ func (e *Executor) killTask(w http.ResponseWriter, r *http.Request) {
 // 心跳检测
 func (e *Executor) beat(w http.ResponseWriter, _ *http.Request) {
 	e.opts.log.Info("心跳检测")
-	jsonTo(http.StatusOK, ReturnSuccess, w)
+	jsonTo(http.StatusOK, Success("OK"), w)
 }
 
 // 忙碌检测
@@ -156,8 +157,8 @@ func (e *Executor) idleBeat(w http.ResponseWriter, r *http.Request) {
 
 	e.opts.log.Info("忙碌检测任务参数", slog.Any("param", param))
 
-	if _, ok := e.runList.Get(param.JobID); ok {
-		e.opts.log.Error("idleBeat任务正在运行", slog.Int64("JobID", param.JobID))
+	if _, ok := e.runList.Get(param.ExecutorID); ok {
+		e.opts.log.Error("idleBeat任务正在运行", slog.String("JobID", param.JobID))
 		jsonTo(http.StatusInternalServerError, ReturnFailure, w)
 		return
 	}

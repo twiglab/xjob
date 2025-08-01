@@ -27,19 +27,19 @@ type Return[T any] struct {
 
 // RegistryParam 注册参数
 type RegistryParam struct {
-	RegistryGroup string `json:"registryGroup"`
-	RegistryKey   string `json:"registryKey"`
-	RegistryValue string `json:"registryValue"`
+	RegistryGroup string `json:"registry_group"`
+	RegistryKey   string `json:"registry_key"`
+	RegistryValue string `json:"registry_value"`
 }
 
 // 执行器执行完任务后，回调任务结果时使用
 type CallbackParamList []HandleCallbackParam
 
 type HandleCallbackParam struct {
-	LogID      int64  `json:"logId"`
-	LogDateTim int64  `json:"logDateTim"`
-	HandleCode int    `json:"handleCode"` //200表示正常,500表示失败
-	HandleMsg  string `json:"handleMsg"`
+	JobID      string `json:"job_id"`      // 任务ID
+	ExecutorID string `json:"executor_id"` // 执行
+	HandleCode int    `json:"handle_code"` //200表示正常,500表示失败
+	HandleMsg  string `json:"handle_msg"`
 }
 
 /*****************  下行参数  *********************/
@@ -53,36 +53,36 @@ const (
 
 // TriggerParam 触发任务请求参数
 type TriggerParam struct {
-	JobID                 int64  `json:"jobId"`                 // 任务ID
-	ExecutorHandler       string `json:"executorHandler"`       // 任务标识
-	ExecutorParams        string `json:"executorParams"`        // 任务参数
-	ExecutorBlockStrategy string `json:"executorBlockStrategy"` // 任务阻塞策略
-	ExecutorTimeout       int64  `json:"executorTimeout"`       // 任务超时时间，单位秒，大于零时生效
-	BroadcastIndex        int64  `json:"broadcastIndex"`        // 分片参数：当前分片
-	BroadcastTotal        int64  `json:"broadcastTotal"`        // 分片参数：总分片
+	JobID                 string `json:"job_id"`                  // 任务ID
+	ExecutorID            string `json:"executor_id"`             // 执行
+	ExecutorHandler       string `json:"executor_handler"`        // 任务标识
+	ExecutorParams        string `json:"executor_Params"`         // 任务参数
+	ExecutorBlockStrategy string `json:"executor_block_strategy"` // 任务阻塞策略
+	ExecutorTimeout       int64  `json:"executor_timeout"`        // 任务超时时间，单位秒，大于零时生效
+	BroadcastIndex        int64  `json:"broadcast_index"`         // 分片参数：当前分片
+	BroadcastTotal        int64  `json:"broadcast_total"`         // 分片参数：总分片
 }
 
 // 终止任务请求参数
 type KillParam struct {
-	JobID int64 `json:"jobId"` // 任务ID
+	JobID      string `json:"job_id"`      // 任务ID
+	ExecutorID string `json:"executor_id"` // 执行
 }
 
 // 忙碌检测请求参数
 type IdleBeatParam struct {
-	JobID int64 `json:"jobId"` // 任务ID
+	JobID      string `json:"job_id"`      // 任务ID
+	ExecutorID string `json:"executor_id"` // 执行
 }
 
 func newCallback(t TriggerParam, code int, msg string) HandleCallbackParam {
 	return HandleCallbackParam{
-		LogID:      t.LogID,
-		LogDateTim: t.LogDateTime,
+		JobID:      t.JobID,
+		ExecutorID: t.ExecutorID,
 		HandleCode: code,
 		HandleMsg:  msg,
 	}
 }
-
-var ReturnSuccess = Success("")
-var ReturnFailure = Failure("")
 
 func Success(msg string) Return[string] {
 	return Return[string]{

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"strings"
 
+	"github.com/tinylib/msgp/msgp"
 	"github.com/twiglab/xjob/pkg/xe"
 	clientv3 "go.etcd.io/etcd/client/v3"
 )
@@ -34,6 +35,7 @@ func (h *Handle) SaveTarger(ctx context.Context, tp xe.TriggerParam) error {
 	if err := enc.Encode(&tp); err != nil {
 		return err
 	}
+	msgp.AppendBool
 	_, err := kv.Put(ctx, "", sb.String())
 	return err
 }
@@ -46,9 +48,23 @@ func (h *Handle) ListTarger(ctx context.Context) ([]xe.TriggerParam, error) {
 		return nil, err
 	}
 
+	var xx []xe.TriggerParam
 	for _, v := range resp.Kvs {
-		json.Unmarshal(v.Value, nil)
-
+		var x xe.TriggerParam
+		if err := json.Unmarshal(v.Value, &x); err == nil {
+			xx = append(xx, x)
+		}
 	}
-	return err
+	return xx, nil
+}
+
+func (h *Handle) W(ctx context.Context) error {
+	xxx := h.client.Watch(ctx, "")
+
+	for x := range xxx {
+		for _, e := range x.Events {
+			e.Type = clientv3.EventTypeDelete
+		}
+	}
+	return nil
 }
