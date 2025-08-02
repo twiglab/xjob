@@ -1,10 +1,10 @@
 module github.com/twiglab/xjob
 
-go 1.24.2
+go 1.25
 
 require (
 	github.com/go-chi/chi/v5 v5.2.2
-	github.com/tinylib/msgp v1.3.0
+	github.com/robfig/cron/v3 v3.0.1
 	go.etcd.io/etcd/client/v3 v3.6.4
 )
 
@@ -14,7 +14,6 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.3 // indirect
-	github.com/philhofer/fwd v1.1.3-0.20240916144458-20a13a1f6b7c // indirect
 	go.etcd.io/etcd/api/v3 v3.6.4 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.6.4 // indirect
 	go.uber.org/multierr v1.11.0 // indirect

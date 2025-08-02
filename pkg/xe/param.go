@@ -27,9 +27,9 @@ type Return[T any] struct {
 
 // RegistryParam 注册参数
 type RegistryParam struct {
-	RegistryGroup string `json:"registry_group"`
-	RegistryKey   string `json:"registry_key"`
-	RegistryValue string `json:"registry_value"`
+	Group string `json:"registry_group"`
+	Key   string `json:"registry_key"`
+	Addr  string `json:"registry_value"`
 }
 
 // 执行器执行完任务后，回调任务结果时使用
@@ -38,8 +38,8 @@ type CallbackParamList []HandleCallbackParam
 type HandleCallbackParam struct {
 	JobID      string `json:"job_id"`      // 任务ID
 	ExecutorID string `json:"executor_id"` // 执行
-	HandleCode int    `json:"handle_code"` //200表示正常,500表示失败
-	HandleMsg  string `json:"handle_msg"`
+	Code       int    `json:"handle_code"` //200表示正常,500表示失败
+	Msg        string `json:"handle_msg"`
 }
 
 /*****************  下行参数  *********************/
