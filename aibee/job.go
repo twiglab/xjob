@@ -2,6 +2,7 @@ package aibee
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/imroc/req/v3"
@@ -55,12 +56,20 @@ func (b *Job) Run(ctx context.Context, task *xxl.Task) error {
 	ys := YestodayStr(time.Now())
 	param := TrafficSummary{
 		EntityType: 70,
-		StartTime:  ys,
-		EndTime:    ys,
 		Interval:   "D",
 	}
 	if err := xxl.TaskJsonParam(task, &param); err != nil {
 		return err
+	}
+
+	if param.StoreCode == "" {
+		return errors.New("storecode is nil")
+	}
+
+	if param.StartTime == "" || param.EndTime == "" {
+		ys := YestodayStr(time.Now())
+		param.StartTime = ys
+		param.EndTime = ys
 	}
 
 	var r Result
