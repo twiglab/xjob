@@ -57,6 +57,8 @@ func (b *Job) Run(ctx context.Context, task *xxl.Task) error {
 	param := TrafficSummary{
 		EntityType: 70,
 		Interval:   "D",
+		EndTime:    ys,
+		StartTime:  ys,
 	}
 	if err := xxl.TaskJsonParam(task, &param); err != nil {
 		return err
@@ -64,12 +66,6 @@ func (b *Job) Run(ctx context.Context, task *xxl.Task) error {
 
 	if param.StoreCode == "" {
 		return errors.New("storecode is nil")
-	}
-
-	if param.StartTime == "" || param.EndTime == "" {
-		ys := YestodayStr(time.Now())
-		param.StartTime = ys
-		param.EndTime = ys
 	}
 
 	var r Result
@@ -87,7 +83,7 @@ func (b *Job) Run(ctx context.Context, task *xxl.Task) error {
 
 	err = b.q.CreateGmEntry(ctx, dbop.CreateGmEntryParams{
 		StoreCode: param.StoreCode,
-		PickTime:  ys,
+		PickTime:  param.EndTime,
 		InTotal:   in,
 	})
 

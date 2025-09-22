@@ -7,6 +7,19 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+func Open(dn, dsn string) (*Queries, error) {
+	db, err := sql.Open(dn, dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	return From(db), nil
+}
+
+func From(db *sql.DB) *Queries {
+	return &Queries{db: db}
+}
+
 type CreateGmEntryParams struct {
 	StoreCode string
 	PickTime  string
@@ -19,6 +32,10 @@ func (p CreateGmEntryParams) PK() string {
 
 type Queries struct {
 	db *sql.DB
+}
+
+func (q *Queries) Close() error {
+	return q.db.Close()
 }
 
 func (q *Queries) CreateGmEntry(ctx context.Context, arg CreateGmEntryParams) error {
