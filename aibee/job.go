@@ -45,10 +45,11 @@ type Job struct {
 	q   *dbop.Queries
 }
 
-func NewJob() *Job {
+func New(aibeeURL string, q *dbop.Queries) *Job {
 	req := req.C().SetBaseURL("https://face-event-api.aibee.cn")
 	return &Job{
 		req: req,
+		q:   q,
 	}
 }
 
@@ -73,6 +74,7 @@ func (b *Job) Run(ctx context.Context, task *xxl.Task) error {
 	if err != nil {
 		return err
 	}
+
 	var in int
 	for _, ent := range r.Data.List {
 		in = in + ent.TrafficIn
