@@ -70,7 +70,11 @@ func (b *Job) Run(ctx context.Context, task *xxl.Task) error {
 	}
 
 	var r Result
-	_, err := b.req.R().SetQueryParamsFromStruct(&param).SetSuccessResult(&r).Get("/traffic_summary")
+	_, err := b.req.R().
+		SetQueryParamsFromStruct(&param).
+		SetSuccessResult(&r).
+		Get("/traffic_summary")
+
 	if err != nil {
 		return err
 	}
@@ -79,6 +83,7 @@ func (b *Job) Run(ctx context.Context, task *xxl.Task) error {
 	for _, ent := range r.Data.List {
 		in = in + ent.TrafficIn
 	}
+
 	if in == 0 {
 		return nil
 	}
