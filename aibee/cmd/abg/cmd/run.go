@@ -8,7 +8,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twiglab/xjob/aibee"
-	"github.com/twiglab/xjob/aibee/dbop"
 )
 
 // runCmd represents the run command
@@ -40,7 +39,7 @@ func run() error {
 	exec.Start()
 	defer func() { _ = exec.Stop() }()
 
-	q, err := dbop.Open(
+	q, err := aibee.Open(
 		viper.GetString("aibee.db.name"),
 		viper.GetString("aibee.db.dsn"),
 	)
@@ -48,8 +47,10 @@ func run() error {
 		return err
 	}
 
+	defer q.Close()
+
 	j := aibee.New("", q)
-	exec.RegTask("abg", task(j))
+	exec.RegTask(j.Name(), task(j))
 
 	if err := http.ListenAndServe(":10009", exec.Handle("/aibee")); err != nil {
 		return err

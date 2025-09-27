@@ -7,7 +7,6 @@ import (
 
 	"github.com/imroc/req/v3"
 	"github.com/it512/xxl-job-exec"
-	"github.com/twiglab/xjob/aibee/dbop"
 )
 
 type TrafficSummary struct {
@@ -38,14 +37,15 @@ type Result struct {
 
 type JobParam struct {
 	StoreCode string `json:"store_code"`
+	StoreName string `json:"store_name"`
 }
 
 type Job struct {
 	req *req.Client
-	q   *dbop.Queries
+	q   *Queries
 }
 
-func New(aibeeURL string, q *dbop.Queries) *Job {
+func New(aibeeURL string, q *Queries) *Job {
 	req := req.C().SetBaseURL("https://face-event-api.aibee.cn")
 	return &Job{
 		req: req,
@@ -53,8 +53,13 @@ func New(aibeeURL string, q *dbop.Queries) *Job {
 	}
 }
 
+func (b *Job) Name() string {
+	return "abg"
+}
+
 func (b *Job) Run(ctx context.Context, task *xxl.Task) error {
-	ys := YestodayStr(time.Now())
+	yestodat := Yestoday(time.Now())
+	ys := DateOnly(yestodat)
 	param := TrafficSummary{
 		EntityType: 70,
 		Interval:   "D",
@@ -88,15 +93,23 @@ func (b *Job) Run(ctx context.Context, task *xxl.Task) error {
 		return nil
 	}
 
-	err = b.q.CreateGmEntry(ctx, dbop.CreateGmEntryParams{
+	err = b.q.CreateGmEntry(ctx, CreateGmEntryParams{
 		StoreCode: param.StoreCode,
-		PickTime:  param.EndTime,
+		DT:        DT(yestodat),
 		InTotal:   in,
 	})
 
 	return err
 }
 
-func YestodayStr(now time.Time) string {
-	return now.Add(-1 * 24 * time.Hour).Format(time.DateOnly)
+func Yestoday(now time.Time) time.Time {
+	return now.Add(-1 * 24 * time.Hour)
+}
+
+func DateOnly(t time.Time) string {
+	return t.Format(time.DateOnly)
+}
+
+func DT(t time.Time) string {
+	return t.Format("20060102")
 }
