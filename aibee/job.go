@@ -65,6 +65,10 @@ func (b *Job) Run(ctx context.Context, task *xxl.Task) error {
 		Interval:   "D",
 		EndTime:    ys,
 		StartTime:  ys,
+
+		JobParam: JobParam{
+			StoreName: "N/A",
+		},
 	}
 	if err := xxl.TaskJsonParam(task, &param); err != nil {
 		return err
@@ -95,6 +99,7 @@ func (b *Job) Run(ctx context.Context, task *xxl.Task) error {
 
 	err = b.q.CreateGmEntry(ctx, CreateGmEntryParams{
 		StoreCode: param.StoreCode,
+		StoreName: param.StoreName,
 		DT:        DT(yestodat),
 		InTotal:   in,
 	})
