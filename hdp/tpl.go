@@ -12,15 +12,14 @@ const Tpl = `
 {{ .Yestoday.Format "2006.01.02" }} {{ .Yestoday | weekday }}
 {{ range .Records }}
 >{{ .Sale.StoreName }} {{ .Sale.Cnt }} 个商户，上报 {{ .Sale.Qty }} 单，销售额 <font color="warning"> {{ .Sale.Total | wan }} </font>万元
->>截至当日欠款总计 <font color="warning"> {{.Fee.T4 | wan}} </font> 万元
+>>截至当日欠款总计 <font color="warning"> {{.Fee.T4 | wan}} </font> 万元，到期已收 <font color="warning"> {{ .Fee.T5 | wan }} </font>万元，收缴率 <font color="warning"> {{ .Fee | recvRate}} </font>
 >>当日核销 {{.Pay.Qty}} 笔，共<font color="warning"> {{.Pay.Total | wan}} </font> 万元
 {{ end }}
 >宜悦城客流 {{.Others.yyc.InTotal}} 人次
 `
 
 /*
-<font color="warning">
-</font>
+<font color="warning"> </font>
 */
 
 type Record struct {
@@ -90,11 +89,16 @@ func wan(total float64) string {
 	return fmt.Sprintf("%.2f", total/10000)
 }
 
+func recvRate(fr FeeRecord) string {
+	return fmt.Sprintf("%.2f%%", fr.T5/fr.T6*100)
+}
+
 func AppTpl() *template.Template {
 	tpl, _ := template.New("tpl").
 		Funcs(template.FuncMap{
-			"weekday": weekday,
-			"wan":     wan,
+			"weekday":  weekday,
+			"wan":      wan,
+			"recvRate": recvRate,
 		}).Parse(Tpl)
 	return tpl
 }

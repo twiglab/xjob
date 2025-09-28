@@ -35,6 +35,8 @@ type FeeRecord struct {
 	StoreName string
 
 	T4 float64
+	T5 float64
+	T6 float64
 }
 
 type GmEntryRecord struct {
@@ -115,6 +117,8 @@ func (s *Store) FeeAgg(dt string) ([]FeeRecord, error) {
 			&sr.StoreCode,
 			&sr.StoreName,
 			&sr.T4,
+			&sr.T5,
+			&sr.T6,
 		)
 		if err != nil {
 			return res, err

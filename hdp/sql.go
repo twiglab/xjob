@@ -11,7 +11,7 @@ select store_code, store_name, qty, total from ads_payment_agg_per_day where dt 
 `
 
 const ads_fee_agg_per_day_sql = `
-select store_code, store_name, t4 from ads_fee_agg_per_day where dt = ? order by store_code
+select store_code, store_name, t4, t5, t6 from ads_fee_agg_per_day where dt = ? order by store_code
 `
 
 const g_gm_entry_sql = `
