@@ -2,6 +2,7 @@ package hdp
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"text/template"
 	"time"
@@ -63,6 +64,38 @@ func (b *App) Run(ctx context.Context, task *xxl.Task) error {
 	}
 
 	return b.App.SendMarkdownMessage(&workwx.Recipient{TagIDs: param.Tags}, sb.String(), false)
+}
+
+func (b *App) GetOutLine() (outline Outline, err error) {
+	yestoday := Yestoday(time.Now())
+	dt := DT(yestoday)
+
+	payment, err := b.Store.PaymentAgg(dt)
+	if err != nil {
+		return
+	}
+
+	fee, err := b.Store.FeeAgg(dt)
+	if err != nil {
+		return
+	}
+
+	sale, err := b.Store.SaleAgg(dt)
+	if err != nil {
+		return
+	}
+
+	gm, err := b.Store.GmEntry(dt)
+	if err != nil {
+		return
+	}
+
+	fmt.Println(gm)
+
+	outline = MakeOutline(Yestoday(time.Now()), fee, payment, sale, gm)
+	outline.Others["yyc"] = gm[0]
+
+	return
 }
 
 func (a *App) OnIncomingMessage(msg *workwx.RxMessage) error {
