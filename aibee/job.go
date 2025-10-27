@@ -93,9 +93,11 @@ func (b *Job) Run(ctx context.Context, task *xxl.Task) error {
 		in = in + ent.TrafficIn
 	}
 
+	/*
 	if in == 0 {
 		return nil
 	}
+	*/
 
 	err = b.q.CreateGmEntry(ctx, CreateGmEntryParams{
 		StoreCode: param.StoreCode,
