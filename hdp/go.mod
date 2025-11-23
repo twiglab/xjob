@@ -4,8 +4,10 @@ go 1.25.1
 
 require (
 	github.com/go-sql-driver/mysql v1.9.3
-	github.com/it512/xxl-job-exec v0.0.1
-	github.com/xen0n/go-workwx/v2 v2.0.0-20250915050435-efd6537db6c2
+	github.com/it512/xxl-job-exec v0.0.2
+	github.com/spf13/cobra v1.10.1
+	github.com/spf13/viper v1.21.0
+	github.com/xen0n/go-workwx/v2 v2.0.0-20251120033907-feeb77256a07
 )
 
 require (
@@ -19,11 +21,9 @@ require (
 	github.com/sourcegraph/conc v0.3.1-0.20240121214520-5f936abd7ae8 // indirect
 	github.com/spf13/afero v1.15.0 // indirect
 	github.com/spf13/cast v1.10.0 // indirect
-	github.com/spf13/cobra v1.10.1 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
-	github.com/spf13/viper v1.21.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/sys v0.29.0 // indirect
-	golang.org/x/text v0.29.0 // indirect
+	golang.org/x/sys v0.38.0 // indirect
+	golang.org/x/text v0.31.0 // indirect
 )
