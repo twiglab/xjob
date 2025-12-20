@@ -34,9 +34,13 @@ type FeeRecord struct {
 	StoreCode string
 	StoreName string
 
-	T4 float64
-	T5 float64
-	T6 float64
+	T4 float64 // 到期未收（开店以来总欠款） t4
+	T5 float64 // 到期已收（开店以来总已收）(t5)
+	T6 float64 // 到期应收（开店以来总应该收）(t6)
+
+	T7 float64
+	T8 float64
+	T9 float64
 }
 
 type GmEntryRecord struct {
@@ -116,9 +120,14 @@ func (s *Store) FeeAgg(dt string) ([]FeeRecord, error) {
 		err := rs.Scan(
 			&sr.StoreCode,
 			&sr.StoreName,
+
 			&sr.T4,
 			&sr.T5,
 			&sr.T6,
+
+			&sr.T7,
+			&sr.T8,
+			&sr.T9,
 		)
 		if err != nil {
 			return res, err

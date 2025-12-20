@@ -7,7 +7,7 @@ require (
 	github.com/it512/xxl-job-exec v0.0.2
 	github.com/spf13/cobra v1.10.1
 	github.com/spf13/viper v1.21.0
-	github.com/xen0n/go-workwx/v2 v2.0.0-20251120033907-feeb77256a07
+	github.com/xen0n/go-workwx/v2 v2.0.0-20251215114428-fcf1468c7518
 )
 
 require (
@@ -25,5 +25,5 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/sys v0.38.0 // indirect
-	golang.org/x/text v0.31.0 // indirect
+	golang.org/x/text v0.32.0 // indirect
 )
