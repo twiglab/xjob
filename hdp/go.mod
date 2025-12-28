@@ -7,7 +7,7 @@ require (
 	github.com/it512/xxl-job-exec v0.0.2
 	github.com/spf13/cobra v1.10.1
 	github.com/spf13/viper v1.21.0
-	github.com/xen0n/go-workwx/v2 v2.0.0-20251215114428-fcf1468c7518
+	github.com/xen0n/go-workwx/v2 v2.0.0-20251227144729-1f7d9360c4c5
 )
 
 require (
