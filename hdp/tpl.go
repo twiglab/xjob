@@ -91,10 +91,16 @@ func wan(total float64) string {
 }
 
 func recvRate(fr FeeRecord) string {
+	if fr.T5 == 0 {
+		return fmt.Sprintf("%.2f%%", 0.0)
+	}
 	return fmt.Sprintf("%.2f%%", fr.T5/fr.T6*100)
 }
 
 func yearRecvRate(fr FeeRecord) string {
+	if fr.T8 == 0 {
+		return fmt.Sprintf("%.2f%%", 0.0)
+	}
 	return fmt.Sprintf("%.2f%%", fr.T8/fr.T9*100)
 }
 
