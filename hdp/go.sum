@@ -59,6 +59,8 @@ github.com/subosito/gotenv v1.6.0 h1:9NlTDc1FTs4qu0DDq7AEtTPNw6SVm7uBMsUCUjABIf8
 github.com/subosito/gotenv v1.6.0/go.mod h1:Dk4QP5c2W3ibzajGcXpNraDfq2IrhjMIvMSWPKKo0FU=
 github.com/xen0n/go-workwx/v2 v2.0.0-20251227144729-1f7d9360c4c5 h1:tCQ1F4OLtJZ9dSW8H0snTwWjlmF6kNGJZ4nkfn0TvGA=
 github.com/xen0n/go-workwx/v2 v2.0.0-20251227144729-1f7d9360c4c5/go.mod h1:rgQroA3Xh7/CuGLfzfteGnaaL84UzBa6bNB9b5vBZ4g=
+github.com/xen0n/go-workwx/v2 v2.0.0-20251230001908-d07440839e25 h1:WUh7vX8gUl8tYmZclgXI0llYbRbjqm7Cy+Xb7/vGE3k=
+github.com/xen0n/go-workwx/v2 v2.0.0-20251230001908-d07440839e25/go.mod h1:rgQroA3Xh7/CuGLfzfteGnaaL84UzBa6bNB9b5vBZ4g=
 go.yaml.in/yaml/v3 v3.0.4 h1:tfq32ie2Jv2UxXFdLJdh3jXuOzWiL1fo0bu/FbuKpbc=
 go.yaml.in/yaml/v3 v3.0.4/go.mod h1:DhzuOOF2ATzADvBadXxruRBLzYTpT36CKvDb3+aBEFg=
 golang.org/x/sys v0.39.0 h1:CvCKL8MeisomCi6qNZ+wbb0DN9E5AATixKsvNtMoMFk=
