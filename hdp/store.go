@@ -43,7 +43,7 @@ type FeeRecord struct {
 	T9 float64
 }
 
-type GmEntryRecord struct {
+type GmRecord struct {
 	StoreCode string
 	StoreName string
 
@@ -137,16 +137,16 @@ func (s *Store) FeeAgg(dt string) ([]FeeRecord, error) {
 	return res, err
 }
 
-func (s *Store) GmEntry(dt string) ([]GmEntryRecord, error) {
+func (s *Store) GmEntry(dt string) ([]GmRecord, error) {
 	rs, err := s.db.QueryContext(context.Background(), g_gm_entry_sql, dt)
 	if err != nil {
 		return nil, err
 	}
 	defer rs.Close()
 
-	var res []GmEntryRecord
+	var res []GmRecord
 	for rs.Next() {
-		var sr GmEntryRecord
+		var sr GmRecord
 		err := rs.Scan(
 			&sr.StoreCode,
 			&sr.StoreName,

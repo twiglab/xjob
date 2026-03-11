@@ -55,7 +55,6 @@ func (b *App) Run(ctx context.Context, task *xxl.Task) error {
 	}
 
 	outline := MakeOutline(Yestoday(time.Now()), fee, payment, sale, gm)
-	outline.Others["yyc"] = gm[0]
 
 	var sb strings.Builder
 	sb.Grow(1024)
@@ -90,10 +89,9 @@ func (b *App) GetOutLine() (outline Outline, err error) {
 		return
 	}
 
-	fmt.Println(gm)
-
 	outline = MakeOutline(Yestoday(time.Now()), fee, payment, sale, gm)
-	outline.Others["yyc"] = gm[0]
+
+	fmt.Println(outline)
 
 	return
 }
