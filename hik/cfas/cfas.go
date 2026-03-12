@@ -44,8 +44,3 @@ type PassengerFlowOut struct {
 	NoRepeatOutNum int `json:"noRepeatOutNum"`
 	NetValue       int `json:"netValue"`
 }
-
-/*
-key：25794645
-密钥：Q7GxWSKu0Ahov98oLdnI
-*/
