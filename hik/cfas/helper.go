@@ -1,28 +1,37 @@
 package cfas
 
 import (
-	"bytes"
+	"crypto/hmac"
 	"crypto/md5"
+	"crypto/sha256"
 	"encoding/base64"
-	"encoding/json/v2"
+	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/imroc/req/v3"
 )
 
-func ContentMD5(v any) ([]byte, string, error) {
-	var bf bytes.Buffer
-	if err := json.MarshalWrite(&bf, v); err != nil {
+func HmacSha256(data string, key string) string {
+	// 1. 创建 HMAC 实例，指定哈希算法和密钥
+	h := hmac.New(sha256.New, []byte(key))
+	// 2. 写入数据
+	h.Write([]byte(data))
+	// 3. 计算哈希值
+	return base64.StdEncoding.EncodeToString(h.Sum(nil))
+}
+
+func ContentAny(a any) ([]byte, string, error) {
+	body, err := json.Marshal(a)
+	if err != nil {
 		return nil, "", err
 	}
-
 	h := md5.New()
-	md5byte := h.Sum(bf.Bytes())
-
+	h.Write(body)
+	md5byte := h.Sum(nil)
 	b64str := base64.StdEncoding.EncodeToString(md5byte)
-
-	return bf.Bytes(), b64str, nil
+	return body, b64str, nil
 }
 
 func HttpDate(d time.Time) string {
@@ -37,6 +46,22 @@ func Timestamp(d time.Time) int64 {
 	return d.UnixMilli()
 }
 
-func M(client *req.Client, req *req.Request) error {
-	return nil
+type Config struct {
+	AppKey    string
+	AppSecret string
+
+	Host string
+	Port int
+
+	BaseURL string
+}
+
+func aksk(conf Config) req.RequestMiddleware {
+	return func(client *req.Client, req *req.Request) error {
+		fmt.Println(req.Body)
+		fmt.Println(req.RawURL)
+		fmt.Println(client.BaseURL)
+		req.SetHeader("X-Ca-Key", conf.AppKey)
+		return nil
+	}
 }
