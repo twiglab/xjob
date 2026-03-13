@@ -14,7 +14,9 @@ const Tpl = `
 >{{ .Store.StoreName }} {{ .Sale.Cnt }} 个商户，上报 {{ .Sale.Qty }} 单，销售额 <font color="warning"> {{ .Sale.Total | wan }} </font>万元
 >>本年总欠款 <font color="warning"> {{.Fee.T7 | wan}} </font> 万元，到期已收 <font color="warning"> {{ .Fee.T8 | wan }} </font>万元，收缴率 <font color="warning"> {{ .Fee | yearRecvRate}} </font>
 >>当日核销 {{.Pay.Qty}} 笔，共<font color="warning"> {{.Pay.Total | wan}} </font> 万元
+{{ if .Gm.InTotal }}
 >当日客流 {{.Gm.InTotal}} 人次
+{{ end }}
 {{ end }}
 `
 
@@ -75,28 +77,6 @@ func (o Outline) Records() (rs []Record) {
 
 	return
 }
-
-/*
-func (o Outline) Records() (rs []Record) {
-
-		for _, x := range o.sale {
-			var r Record
-			r.Sale = x
-
-			if i, ok := slices.BinarySearchFunc(o.fee, x.StoreCode, func(fr FeeRecord, k string) int { return cmp.Compare(fr.StoreCode, k) }); ok {
-				r.Fee = o.fee[i]
-			}
-
-			if i, ok := slices.BinarySearchFunc(o.pay, x.StoreCode, func(pr PaymentRecord, k string) int { return cmp.Compare(pr.StoreCode, k) }); ok {
-				r.Pay = o.pay[i]
-			}
-
-			rs = append(rs, r)
-		}
-
-		return
-	}
-*/
 
 func MakeOutline(t time.Time, fee []FeeRecord, pay []PaymentRecord, sale []SaleRecord, gm []GmRecord) Outline {
 	return Outline{Yestoday: t, fee: fee, pay: pay, sale: sale, gm: gm}

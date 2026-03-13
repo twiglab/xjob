@@ -2,7 +2,6 @@ package hdp
 
 import (
 	"context"
-	"fmt"
 	"strings"
 	"text/template"
 	"time"
@@ -90,8 +89,6 @@ func (b *App) GetOutLine() (outline Outline, err error) {
 	}
 
 	outline = MakeOutline(Yestoday(time.Now()), fee, payment, sale, gm)
-
-	fmt.Println(outline)
 
 	return
 }
