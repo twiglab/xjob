@@ -1,7 +1,5 @@
 package cfas
 
-// application/json
-
 type Rtn[T any] struct {
 	Code string `json:"code"`
 	Msg  string `json:"msg"`
@@ -38,13 +36,11 @@ type PassengerFlowIn struct {
 }
 
 type PassengerFlowOut struct {
-	StartTime string `json:"startTime"`
-	GroupID   string `json:"groupId"`
-	GroupName string `json:"groupName"`
+	GroupID string `json:"groupId"`
 
-	FlowInNum  int `json:"flowInNum"`
-	FlowOutNum int `json:"flowOutNum"`
-	HoldValue  int `json:"holdValue"`
+	FlowInNum  int     `json:"flowInNum"`
+	FlowOutNum int     `json:"flowOutNum"`
+	HoldValue  float64 `json:"holdValue"`
 
 	NoRepeatInNum  int `json:"noRepeatInNum"`
 	NoRepeatOutNum int `json:"noRepeatOutNum"`
