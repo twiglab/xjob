@@ -1,7 +1,6 @@
 package cfas
 
 // application/json
-// Content-Type:text/plain;charset=UTF-8
 
 type Rtn[T any] struct {
 	Code string `json:"code"`
@@ -19,6 +18,13 @@ type CountGroupIn struct {
 	PageNo    int    `json:"pageNo"`
 	PageSize  int    `json:"pageSize"`
 	Name      string `json:"name,omitempty"`
+}
+
+type CountGroupOut struct {
+	GroupID   string `json:"groupId"`
+	GroupName string `json:"groupName"`
+	GroupType int    `json:"groupType"`
+	RegionID  string `json:"regionId"`
 }
 
 // 1.8查询时间范围内的多个统计组的客流统计数据
