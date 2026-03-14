@@ -10,11 +10,8 @@ import (
 )
 
 func HmacSha256(data string, key string) string {
-	// 1. 创建 HMAC 实例，指定哈希算法和密钥
 	h := hmac.New(sha256.New, []byte(key))
-	// 2. 写入数据
 	h.Write([]byte(data))
-	// 3. 计算哈希值
 	return base64.StdEncoding.EncodeToString(h.Sum(nil))
 }
 
@@ -46,4 +43,13 @@ func sign(meth, key, url string, secret string) string {
 	sb.WriteByte('\n')
 	sb.WriteString(url)
 	return HmacSha256(sb.String(), secret)
+}
+
+func collect(l []PassengerFlowOut) (int, int, int) {
+	var inTotal, outTotal int
+	for _, o := range l {
+		inTotal = inTotal + o.FlowInNum
+		outTotal = outTotal + o.FlowOutNum
+	}
+	return inTotal, outTotal, inTotal - outTotal
 }

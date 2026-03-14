@@ -1,5 +1,7 @@
 package cfas
 
+import "time"
+
 type Rtn[T any] struct {
 	Code string `json:"code"`
 	Msg  string `json:"msg"`
@@ -29,10 +31,10 @@ type CountGroupOut struct {
 // ArtemisURL: /api/cfas/v2/passengerFlow/groups
 
 type PassengerFlowIn struct {
-	IDs         string `json:"ids"`
-	Granularity string `json:"granularity"`
-	StartTime   string `json:"startTime"`
-	EndTime     string `json:"endTime"`
+	IDs         string    `json:"ids"`
+	Granularity string    `json:"granularity"`
+	StartTime   time.Time `json:"startTime,format:RFC3339"`
+	EndTime     time.Time `json:"endTime,format:RFC3339"`
 }
 
 type PassengerFlowOut struct {
@@ -46,3 +48,8 @@ type PassengerFlowOut struct {
 	NoRepeatOutNum int `json:"noRepeatOutNum"`
 	NetValue       int `json:"netValue"`
 }
+
+type (
+	PassengerFlowRtn Rtn[PassengerFlowOut]
+	CountGroupOutRtn Rtn[CountGroupOut]
+)
