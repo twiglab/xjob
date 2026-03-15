@@ -15,7 +15,7 @@ const Tpl = `
 >>本年总欠款 <font color="warning"> {{.Fee.T7 | wan}} </font> 万元，到期已收 <font color="warning"> {{ .Fee.T8 | wan }} </font>万元，收缴率 <font color="warning"> {{ .Fee | yearRecvRate}} </font>
 >>当日核销 {{.Pay.Qty}} 笔，共<font color="warning"> {{.Pay.Total | wan}} </font> 万元
 {{ if .Gm.InTotal }}
->当日营业期间客流 {{.Gm.InTotal}} 人次（入）
+>{{ .Gm.StoreName }}营业期间总客流 {{.Gm.InTotal}} 人次（入）
 {{ end }}
 {{ end }}
 `
@@ -70,6 +70,10 @@ func (o Outline) Records() (rs []Record) {
 
 		if i, ok := slices.BinarySearchFunc(o.pay, x.StoreCode, func(pr PaymentRecord, k string) int { return cmp.Compare(pr.StoreCode, k) }); ok {
 			r.Pay = o.pay[i]
+		}
+
+		if i, ok := slices.BinarySearchFunc(o.gm, x.StoreCode, func(gr GmRecord, k string) int { return cmp.Compare(gr.StoreCode, k) }); ok {
+			r.Gm = o.gm[i]
 		}
 
 		rs = append(rs, r)

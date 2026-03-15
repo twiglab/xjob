@@ -15,7 +15,7 @@ select store_code, store_name, t4, t5, t6, t7, t8, t9 from ads_fee_agg_per_day w
 `
 
 const g_gm_entry_sql = `
-select store_code, store_name, in_total from g_gm_entry where dt = ? order by store_code
+select store_code, store_name, in_total from g_flow_entry where dt = ? order by store_code
 `
 
 func DayBeginEnd(t time.Time) (begin time.Time, end time.Time) {
