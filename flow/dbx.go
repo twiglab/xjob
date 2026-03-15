@@ -12,6 +12,11 @@ func PK(code, dt string) string {
 	return code + "-" + dt + "-" + "in"
 }
 
+type Param struct {
+	StoreCode string `json:"store_code"`
+	StoreName string `json:"store_name"`
+}
+
 type DBx struct {
 	Client *ent.Client
 }

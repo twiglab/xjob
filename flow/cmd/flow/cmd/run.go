@@ -9,7 +9,7 @@ import (
 
 	"github.com/it512/xxl-job-exec"
 	"github.com/spf13/cobra"
-	"github.com/twiglab/xjob/flow"
+	"github.com/twiglab/xjob/flow/hik"
 )
 
 // runCmd represents the run command
@@ -36,17 +36,15 @@ func run() error {
 	exec.Start()
 	defer func() { _ = exec.Stop() }()
 
-	j := &flow.HikJob{
+	j := &hik.HikJob{
 		DBx: dbx(),
 	}
+
+	var push hik.CfasPushBot
 	exec.RegTask(j.Name(), task(j))
+	exec.RegTask(push.Name(), task(push))
 
-	if err := http.ListenAndServe(webaddr(), exec.Handle(handlepath())); err != nil {
-		return err
-	}
-
-	return nil
-
+	return http.ListenAndServe(webaddr(), exec.Handle(handlepath()))
 }
 
 type job interface {

@@ -16,9 +16,9 @@ func HmacSha256(data string, key string) string {
 }
 
 type Config struct {
-	AppKey    string
-	AppSecret string
-	BaseURL   string
+	AppKey    string `json:"app_key"`
+	AppSecret string `json:"app_secret"`
+	BaseURL   string `json:"base_url"`
 }
 
 func aksk(conf Config) req.RequestMiddleware {
