@@ -3,7 +3,6 @@ package cfas
 import (
 	"context"
 	"net/http"
-	"time"
 
 	"github.com/imroc/req/v3"
 )
@@ -47,17 +46,5 @@ func (c *Client) PassengerFlow(ctx context.Context, in PassengerFlowIn) (out Pas
 		SetBody(in).
 		SetErrorResult(&out).
 		Post("/artemis/api/cfas/v2/passengerFlow/groups")
-	return
-}
-
-func (c Client) Collect(ctx context.Context, start, end time.Time) (in int, out int, keep int, err error) {
-	pf := PassengerFlowIn{IDs: "1", Granularity: "minutely", StartTime: start, EndTime: end}
-	var pfr PassengerFlowRtn
-	pfr, err = c.PassengerFlow(ctx, pf)
-	if err != nil {
-		return
-	}
-
-	in, out, keep = collect(pfr.Data.List)
 	return
 }

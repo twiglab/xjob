@@ -45,7 +45,7 @@ func sign(meth, key, url string, secret string) string {
 	return HmacSha256(sb.String(), secret)
 }
 
-func collect(l []PassengerFlowOut) (int, int, int) {
+func Collect(l []PassengerFlowOut) (int, int, int) {
 	var inTotal, outTotal int
 	for _, o := range l {
 		inTotal = inTotal + o.FlowInNum
