@@ -32,14 +32,16 @@ type PingReq struct {
 	Headers Headers `json:"headers"`
 }
 
-type Response struct {
-	Cmd     string  `json:"cmd,omitempty"`
+type Resp struct {
 	Headers Headers `json:"headers,omitzero"`
+	ErrCode int     `json:"errcode,omitempty"`
+	ErrMsg  string  `json:"errmsg,omitempty"`
+}
 
+type Response struct {
+	Cmd string `json:"cmd,omitempty"`
+	Resp
 	Body jsontext.Value `json:"body,omitempty"`
-
-	ErrCode int    `json:"errcode,omitempty"`
-	ErrMsg  string `json:"errmsg,omitempty"`
 }
 
 func (r Response) IsCmd() bool {
