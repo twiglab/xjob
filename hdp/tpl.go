@@ -15,7 +15,7 @@ const Tpl = `
 >>本年总欠款 <font color="warning"> {{.Fee.T7 | wan}} </font> 万元，到期已收 <font color="warning"> {{ .Fee.T8 | wan }} </font>万元，收缴率 <font color="warning"> {{ .Fee | yearRecvRate}} </font>
 >>当日核销 {{.Pay.Qty}} 笔，共<font color="warning"> {{.Pay.Total | wan}} </font> 万元
 {{ if .Gm.InTotal }}
->{{ .Gm.StoreName }}营业期间总客流 {{.Gm.InTotal}} 人次（入）
+>>{{ .Gm.StoreName }}营业期间总客流 {{.Gm.InTotal}} 人次（入）
 {{ end }}
 {{ end }}
 `
