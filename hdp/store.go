@@ -2,9 +2,9 @@ package hdp
 
 import (
 	"context"
-	"database/sql"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
 // ads_fee_agg_per_day
@@ -51,11 +51,15 @@ type GmRecord struct {
 }
 
 type Store struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
-func NewStore(db *sql.DB) *Store {
-	return &Store{db: db}
+func NewStore(name, dsn string) (*Store, error) {
+	db, err := sqlx.Connect(name, dsn)
+	if err != nil {
+		return nil, err
+	}
+	return &Store{db: db}, nil
 }
 
 func (s *Store) SaleAgg(dt string) ([]SaleRecord, error) {
@@ -158,4 +162,8 @@ func (s *Store) GmEntry(dt string) ([]GmRecord, error) {
 		res = append(res, sr)
 	}
 	return res, err
+}
+
+func (s *Store) Close() error {
+	return s.db.Close()
 }

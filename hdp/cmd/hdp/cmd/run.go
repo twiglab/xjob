@@ -5,7 +5,7 @@ package cmd
 
 import (
 	"context"
-	"database/sql"
+	"log"
 	"net/http"
 
 	"github.com/it512/xxl-job-exec"
@@ -44,16 +44,14 @@ func run() error {
 	exec.Start()
 	defer func() { _ = exec.Stop() }()
 
-	db, err := sql.Open(
+	q, err := hdp.NewStore(
 		viper.GetString("hdp.db.name"),
 		viper.GetString("hdp.db.dsn"),
 	)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
-	defer db.Close()
-
-	q := hdp.NewStore(db)
+	defer q.Close()
 
 	wx := workwx.New(viper.GetString("hdp.wxapp.corp"))
 	app := wx.WithApp(
@@ -71,7 +69,7 @@ func run() error {
 	exec.RegTask(j.Name(), task(j))
 
 	if err := http.ListenAndServe(":10008", exec.Handle("/hdp")); err != nil {
-		return err
+		log.Fatal(err)
 	}
 
 	return nil
