@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"database/sql"
+	"fmt"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -29,22 +29,26 @@ func init() {
 
 func t() error {
 
-	db, err := sql.Open(
+	q, err := hdp.NewStore(
 		viper.GetString("hdp.db.name"),
 		viper.GetString("hdp.db.dsn"),
 	)
 	if err != nil {
 		return err
 	}
-	defer db.Close()
-
-	q := hdp.NewStore(db)
+	defer q.Close()
 
 	j := &hdp.App{
 		Store: q,
 	}
 
-	_, err = j.GetOutLine()
+	o, err := j.GetOutLine()
+
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(o)
 
 	return err
 
