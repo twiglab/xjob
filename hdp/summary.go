@@ -31,6 +31,8 @@ type SummaryOutline struct {
 	Gm   GmRecord
 
 	Gr GatherRate
+
+	Holiday Holiday
 }
 
 type GatherRate struct {
@@ -75,7 +77,7 @@ type Summary struct {
 }
 
 func (b *Summary) Name() string {
-	return "store-summary-per-day"
+	return "project-summary-per-day"
 }
 
 func (b *Summary) Run(ctx context.Context, task *xxl.Task) error {
@@ -86,7 +88,7 @@ func (b *Summary) Run(ctx context.Context, task *xxl.Task) error {
 
 	outline, _ := b.DoRun(ctx, param)
 
-	return b.Push(ctx, param, outline)
+	return b.Push(ctx, outline)
 }
 
 func (b *Summary) DoRun(ctx context.Context, param SummaryParam) (SummaryOutline, error) {
@@ -95,7 +97,6 @@ func (b *Summary) DoRun(ctx context.Context, param SummaryParam) (SummaryOutline
 	dt := DT(yestoday)
 
 	var outline SummaryOutline
-	outline.Param = param
 	outline.Yestoday = yestoday
 	outline.Fee, _ = b.DBx.FeeAgg(param.StoreCode, dt)
 	outline.Pay, _ = b.DBx.PaymentAgg(param.StoreCode, dt)
@@ -104,16 +105,18 @@ func (b *Summary) DoRun(ctx context.Context, param SummaryParam) (SummaryOutline
 	gg, _ := b.DBx.GatherAgg(param.StoreCode)
 	outline.Gr = g(gg)
 
+	outline.Param = param
+
 	return outline, nil
 }
 
-func (b *Summary) Push(ctx context.Context, param SummaryParam, outline SummaryOutline) error {
+func (b *Summary) Push(ctx context.Context, outline SummaryOutline) error {
 	var sb strings.Builder
 	sb.Grow(2048)
 	if err := b.Tpl.Execute(&sb, outline); err != nil {
 		return err
 	}
 
-	wc := workwx.NewWebhookClient(param.BotKey)
+	wc := workwx.NewWebhookClient(outline.Param.BotKey)
 	return wc.SendMarkdownV2Message(sb.String())
 }

@@ -137,17 +137,19 @@ func AppTpl() *template.Template {
 }
 
 const summaryTpl = `
-{{ .Param.StoreName }} 运营日报 {{ .Yestoday.Format "2006.01.02" }} {{ .Yestoday | weekday }}
->{{ .Sale.Cnt }} 个商户，上报 {{ .Sale.Qty }} 单，销售额 <font color="warning"> {{ .Sale.Total | wan }} </font>万元
->本年总欠款 <font color="warning"> {{.Fee.T7 | wan}} </font> 万元，到期已收 <font color="warning"> {{ .Fee.T8 | wan }} </font>万元，收缴率 <font color="warning"> {{ .Fee | yearRecvRate}} </font>
->当日核销 {{.Pay.Qty}} 笔，共<font color="warning"> {{.Pay.Total | wan}} </font> 万元
+# {{ .Param.StoreName }} 运营日报 {{ .Yestoday.Format "2006.01.02" }} {{ .Yestoday | weekday }}
+>**{{ .Sale.Cnt }}** 个商户，上报 **{{ .Sale.Qty }}** 单，销售额 **{{ .Sale.Total | wan }}** 万元
+>本年总欠款 **{{.Fee.T7 | wan}}** 万元，到期已收 **{{ .Fee.T8 | wan }}** 万元，收缴率 **{{ .Fee | yearRecvRate}}**
+>当日核销 **{{.Pay.Qty}}** 笔，共 **{{.Pay.Total | wan}}** 万元
 {{- if .Gm.InTotal }}
->营业期间总客流 {{.Gm.InTotal}} 人次（入）
+>营业期间总客流 **{{.Gm.InTotal}}** 人次（入）
 {{ end }}
+
+## 前12个月收缴率（单位：万元）
 | 月份 | 未收 | 已收 | 收缴率 |
 | :----- | :----: | -------: | :----- |
 {{ range .Gr.Table -}}
-| {{.Ym}} | {{.Fee0 | wan}} | {{.Fee1 | wan}} | {{.Rate | rate}} |
+| {{.Ym}} | {{.Fee0 | wan}} | {{.Fee1 | wan}} | **{{.Rate | rate}}** |
 {{ end }}
 `
 

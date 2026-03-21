@@ -12,7 +12,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twiglab/xjob/hdp"
-	"github.com/xen0n/go-workwx/v2"
 )
 
 // runCmd represents the run command
@@ -44,40 +43,33 @@ func run() error {
 	exec.Start()
 	defer func() { _ = exec.Stop() }()
 
-	q, err := hdp.NewStore(
+	dbx, err := hdp.NewDBx(
 		viper.GetString("hdp.db.name"),
 		viper.GetString("hdp.db.dsn"),
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer q.Close()
-
-	wx := workwx.New(viper.GetString("hdp.wxapp.corp"))
-	app := wx.WithApp(
-		viper.GetString("hdp.wxapp.secret"),
-		viper.GetInt64("hdp.wxapp.agent"),
-	)
-	app.SpawnAccessTokenRefresher()
-
-	j := &hdp.App{
-		Store: q,
-		App:   app,
-		Tpl:   hdp.AppTpl(),
+	summary := &hdp.Summary{
+		DBx: dbx,
+		Tpl: hdp.SummaryTpl(),
 	}
-
-	exec.RegTask(j.Name(), task(j))
+	defer dbx.Close()
+	exec.RegTask(summary.Name(), task(summary))
 
 	if err := http.ListenAndServe(":10008", exec.Handle("/hdp")); err != nil {
 		log.Fatal(err)
 	}
 
 	return nil
-
 }
 
-func task(app *hdp.App) xxl.TaskFunc {
+type job interface {
+	Run(ctx context.Context, task *xxl.Task) error
+}
+
+func task(j job) xxl.TaskFunc {
 	return func(ctx context.Context, task *xxl.Task) error {
-		return app.Run(ctx, task)
+		return j.Run(ctx, task)
 	}
 }
