@@ -5,6 +5,7 @@ go 1.26.0
 require (
 	github.com/go-sql-driver/mysql v1.9.3
 	github.com/it512/xxl-job-exec v0.0.2
+	github.com/jmoiron/sqlx v1.4.0
 	github.com/spf13/cobra v1.10.1
 	github.com/spf13/viper v1.21.0
 	github.com/xen0n/go-workwx/v2 v2.0.0-alpha.1
@@ -16,7 +17,6 @@ require (
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/jmoiron/sqlx v1.4.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/sagikazarmark/locafero v0.11.0 // indirect
 	github.com/sourcegraph/conc v0.3.1-0.20240121214520-5f936abd7ae8 // indirect

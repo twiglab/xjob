@@ -111,13 +111,6 @@ func wan(total float64) string {
 	return fmt.Sprintf("%.2f", total/10000)
 }
 
-func recvRate(fr FeeRecord) string {
-	if fr.T5 == 0 {
-		return fmt.Sprintf("%.2f%%", 0.0)
-	}
-	return fmt.Sprintf("%.2f%%", fr.T5/fr.T6*100)
-}
-
 func yearRecvRate(fr FeeRecord) string {
 	if fr.T8 == 0 {
 		return fmt.Sprintf("%.2f%%", 0.0)
@@ -125,13 +118,46 @@ func yearRecvRate(fr FeeRecord) string {
 	return fmt.Sprintf("%.2f%%", fr.T8/fr.T9*100)
 }
 
+func rate(f float64) string {
+	if f == 0 {
+		return fmt.Sprintf("%.2f%%", 0.0)
+	}
+	return fmt.Sprintf("%.2f%%", f*100)
+}
+
 func AppTpl() *template.Template {
 	tpl, _ := template.New("tpl").
 		Funcs(template.FuncMap{
 			"weekday":      weekday,
 			"wan":          wan,
-			"recvRate":     recvRate,
 			"yearRecvRate": yearRecvRate,
+			"rate":         rate,
 		}).Parse(Tpl)
+	return tpl
+}
+
+const summaryTpl = `
+{{ .Param.StoreName }} 运营日报 {{ .Yestoday.Format "2006.01.02" }} {{ .Yestoday | weekday }}
+>{{ .Sale.Cnt }} 个商户，上报 {{ .Sale.Qty }} 单，销售额 <font color="warning"> {{ .Sale.Total | wan }} </font>万元
+>本年总欠款 <font color="warning"> {{.Fee.T7 | wan}} </font> 万元，到期已收 <font color="warning"> {{ .Fee.T8 | wan }} </font>万元，收缴率 <font color="warning"> {{ .Fee | yearRecvRate}} </font>
+>当日核销 {{.Pay.Qty}} 笔，共<font color="warning"> {{.Pay.Total | wan}} </font> 万元
+{{- if .Gm.InTotal }}
+>营业期间总客流 {{.Gm.InTotal}} 人次（入）
+{{ end }}
+| 月份 | 未收 | 已收 | 收缴率 |
+| :----- | :----: | -------: | :----- |
+{{ range .Gr.Table -}}
+| {{.Ym}} | {{.Fee0 | wan}} | {{.Fee1 | wan}} | {{.Rate | rate}} |
+{{ end }}
+`
+
+func SummaryTpl() *template.Template {
+	tpl, _ := template.New("summary").
+		Funcs(template.FuncMap{
+			"weekday":      weekday,
+			"wan":          wan,
+			"yearRecvRate": yearRecvRate,
+			"rate":         rate,
+		}).Parse(summaryTpl)
 	return tpl
 }

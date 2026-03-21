@@ -7,49 +7,6 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-// ads_fee_agg_per_day
-// ads_payment_agg_per_day
-// ads_sale_agg_per_day
-// g_gm_entry 客流采集
-
-type SaleRecord struct {
-	StoreCode string
-	StoreName string
-
-	Cnt int
-	Qty float64
-
-	Total float64
-}
-
-type PaymentRecord struct {
-	StoreCode string
-	StoreName string
-
-	Qty   int
-	Total float64
-}
-
-type FeeRecord struct {
-	StoreCode string
-	StoreName string
-
-	T4 float64 // 到期未收（开店以来总欠款） t4
-	T5 float64 // 到期已收（开店以来总已收）(t5)
-	T6 float64 // 到期应收（开店以来总应该收）(t6)
-
-	T7 float64
-	T8 float64
-	T9 float64
-}
-
-type GmRecord struct {
-	StoreCode string
-	StoreName string
-
-	InTotal int
-}
-
 type Store struct {
 	db *sqlx.DB
 }
@@ -60,6 +17,10 @@ func NewStore(name, dsn string) (*Store, error) {
 		return nil, err
 	}
 	return &Store{db: db}, nil
+}
+
+func (s *Store) Close() error {
+	return s.db.Close()
 }
 
 func (s *Store) SaleAgg(dt string) ([]SaleRecord, error) {
@@ -125,10 +86,6 @@ func (s *Store) FeeAgg(dt string) ([]FeeRecord, error) {
 			&sr.StoreCode,
 			&sr.StoreName,
 
-			&sr.T4,
-			&sr.T5,
-			&sr.T6,
-
 			&sr.T7,
 			&sr.T8,
 			&sr.T9,
@@ -141,29 +98,7 @@ func (s *Store) FeeAgg(dt string) ([]FeeRecord, error) {
 	return res, err
 }
 
-func (s *Store) GmEntry(dt string) ([]GmRecord, error) {
-	rs, err := s.db.QueryContext(context.Background(), g_gm_entry_sql, dt)
-	if err != nil {
-		return nil, err
-	}
-	defer rs.Close()
-
-	var res []GmRecord
-	for rs.Next() {
-		var sr GmRecord
-		err := rs.Scan(
-			&sr.StoreCode,
-			&sr.StoreName,
-			&sr.InTotal,
-		)
-		if err != nil {
-			return res, err
-		}
-		res = append(res, sr)
-	}
-	return res, err
-}
-
-func (s *Store) Close() error {
-	return s.db.Close()
+func (s *Store) GmEntry(dt string) (a []GmRecord, err error) {
+	err = s.db.Select(&a, g_gm_entry_sql, dt)
+	return
 }
