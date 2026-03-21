@@ -11,7 +11,6 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"github.com/twiglab/xjob/hdp"
 )
 
@@ -35,20 +34,12 @@ func init() {
 }
 
 func summary() error {
-
-	dbx, err := hdp.NewDBx(
-		viper.GetString("hdp.db.name"),
-		viper.GetString("hdp.db.dsn"),
-	)
-	if err != nil {
-		log.Fatal(err)
+	summary := &hdp.Summary{
+		DBx:      dbx(),
+		Tpl:      hdp.SummaryTpl(),
+		Holidays: holidays(),
 	}
-	defer dbx.Close()
 
-	j := &hdp.Summary{
-		DBx: dbx,
-		Tpl: hdp.SummaryTpl(),
-	}
 	param := hdp.SummaryParam{
 		StoreCode: "1006",
 		StoreName: "长乐金陵",
@@ -57,13 +48,13 @@ func summary() error {
 	json.MarshalWrite(os.Stdout, param)
 	fmt.Println()
 	fmt.Println("-------------------------------")
-	o, err := j.DoRun(context.Background(), param)
+	o, err := summary.DoRun(context.Background(), param)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	j.Tpl.Execute(os.Stdout, o)
+	summary.Tpl.Execute(os.Stdout, o)
 
 	return err
 

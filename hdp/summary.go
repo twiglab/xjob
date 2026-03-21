@@ -46,7 +46,7 @@ func (g GatherRate) Table() []*GatherItem {
 	)
 }
 
-func g(grs []GatherRecord) GatherRate {
+func gr(grs []GatherRecord) GatherRate {
 	gm := make(map[string]*GatherItem)
 
 	for _, gr := range grs {
@@ -71,9 +71,10 @@ func g(grs []GatherRecord) GatherRate {
 }
 
 type Summary struct {
-	DBx    *DBx
-	Tpl    *template.Template
-	Logger *slog.Logger
+	DBx      *DBx
+	Tpl      *template.Template
+	Holidays Holidays
+	Logger   *slog.Logger
 }
 
 func (b *Summary) Name() string {
@@ -103,7 +104,8 @@ func (b *Summary) DoRun(ctx context.Context, param SummaryParam) (SummaryOutline
 	outline.Sale, _ = b.DBx.SaleAgg(param.StoreCode, dt)
 	outline.Gm, _ = b.DBx.GmEntry(param.StoreCode, dt)
 	gg, _ := b.DBx.GatherAgg(param.StoreCode)
-	outline.Gr = g(gg)
+	outline.Gr = gr(gg)
+	outline.Holiday = b.Holidays.Find(yestoday)
 
 	outline.Param = param
 

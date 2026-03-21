@@ -10,7 +10,6 @@ import (
 
 	"github.com/it512/xxl-job-exec"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"github.com/twiglab/xjob/hdp"
 )
 
@@ -34,27 +33,15 @@ func init() {
 }
 
 func run() error {
-	exec := xxl.NewExecutor(
-		xxl.ServerAddr(viper.GetString("xxl.url")),
-		xxl.AccessToken(viper.GetString("xxl.token")),
-		xxl.RegistryKey(viper.GetString("xxl.key")),
-		xxl.ExecutorURL(viper.GetString("xxl.local.url")),
-	)
+	exec := xxlexec()
 	exec.Start()
 	defer func() { _ = exec.Stop() }()
 
-	dbx, err := hdp.NewDBx(
-		viper.GetString("hdp.db.name"),
-		viper.GetString("hdp.db.dsn"),
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
 	summary := &hdp.Summary{
-		DBx: dbx,
-		Tpl: hdp.SummaryTpl(),
+		DBx:      dbx(),
+		Tpl:      hdp.SummaryTpl(),
+		Holidays: holidays(),
 	}
-	defer dbx.Close()
 	exec.RegTask(summary.Name(), task(summary))
 
 	if err := http.ListenAndServe(":10008", exec.Handle("/hdp")); err != nil {

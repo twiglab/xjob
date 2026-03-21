@@ -45,8 +45,19 @@ func rate(f float64) string {
 	return fmt.Sprintf("%.2f%%", f*100)
 }
 
+func holiday(h Holiday) string {
+	if h.NotFound {
+		return ""
+	}
+
+	if h.IsOffDay {
+		return h.Name + "（休）"
+	}
+	return h.Name + "（班）"
+}
+
 const summaryTpl = `
-# {{ .Param.StoreName }} 运营日报 {{ .Yestoday.Format "2006.01.02" }} {{ .Yestoday | weekday }}
+# {{ .Param.StoreName }} 运营日报 {{ .Yestoday.Format "2006.01.02" }} {{ .Yestoday | weekday }} {{.Holiday | holiday}}
 >**{{ .Sale.Cnt }}** 个商户，上报 **{{ .Sale.Qty }}** 单，销售额 **{{ .Sale.Total | wan }}** 万元
 >本年总欠款 **{{.Fee.T7 | wan}}** 万元，到期已收 **{{ .Fee.T8 | wan }}** 万元，收缴率 **{{ .Fee | yearRecvRate}}**
 >当日核销 **{{.Pay.Qty}}** 笔，共 **{{.Pay.Total | wan}}** 万元
@@ -69,6 +80,7 @@ func SummaryTpl() *template.Template {
 			"wan":          wan,
 			"yearRecvRate": yearRecvRate,
 			"rate":         rate,
+			"holiday":      holiday,
 		}).Parse(summaryTpl)
 	return tpl
 }
