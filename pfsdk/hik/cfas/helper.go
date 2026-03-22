@@ -34,6 +34,7 @@ func aksk(conf Config) req.RequestMiddleware {
 
 func sign(meth, key, url string, secret string) string {
 	var sb strings.Builder
+	sb.Grow(1024)
 	sb.WriteString(meth)
 	sb.WriteByte('\n')
 	sb.WriteString(JsonContentType)
