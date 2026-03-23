@@ -44,7 +44,6 @@ func (b *HikJob) Run(ctx context.Context, task *xxl.Task) error {
 		return err
 	}
 
-	fmt.Println(in)
 	return b.DBx.Save(ctx, yestoday, param.Param, in)
 }
 

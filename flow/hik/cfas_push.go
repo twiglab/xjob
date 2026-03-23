@@ -38,8 +38,17 @@ func (b CfasPushBot) Run(ctx context.Context, task *xxl.Task) error {
 		return err
 	}
 
-	return wc.SendTextMessage(fmt.Sprintf("%s %s 进%d，出%d，在场%d",
+	if pfsdk.MinPerDay(now) < last {
+		return wc.SendTextMessage(fmt.Sprintf("%s %s 进%d，出%d，在场%d",
+			param.StoreName,
+			pfsdk.DateTime(now),
+			in, out, keep), nil)
+	}
+
+	return wc.SendTextMessage(fmt.Sprintf("%s %s 总客流%d（入）",
 		param.StoreName,
-		pfsdk.DateTime(now),
-		in, out, keep), nil)
+		pfsdk.DateOnly(now),
+		in), nil)
 }
+
+const last = 22 * 60
