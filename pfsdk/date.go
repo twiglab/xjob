@@ -32,3 +32,8 @@ func DateTime(t time.Time) string {
 func DT(t time.Time) string {
 	return t.Format("20060102")
 }
+
+func MinPerDay(t time.Time) int {
+	h, m, _ := t.Clock()
+	return h*60 + m
+}
