@@ -56,6 +56,10 @@ type GatherItem struct {
 	Fee1 float64
 }
 
+func (g *GatherItem) Total() float64 {
+	return g.Fee0 + g.Fee1
+}
+
 func (g *GatherItem) Rate() float64 {
 	return g.Fee1 / (g.Fee0 + g.Fee1)
 }
