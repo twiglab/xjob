@@ -3,7 +3,6 @@ package hik
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/it512/xxl-job-exec"

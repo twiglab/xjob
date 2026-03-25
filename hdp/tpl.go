@@ -59,7 +59,6 @@ func holiday(h Holiday) string {
 const summaryTpl = `
 # {{ .Param.StoreName }} 运营日报 {{ .Yestoday.Format "2006.01.02" }} {{ .Yestoday | weekday }} {{.Holiday | holiday}}
 >**{{ .Sale.Cnt }}** 个商户，上报 **{{ .Sale.Qty }}** 单，销售额 **{{ .Sale.Total | wan }}** 万元
->本年总欠款 **{{.Fee.T7 | wan}}** 万元，到期已收 **{{ .Fee.T8 | wan }}** 万元，收缴率 **{{ .Fee | yearRecvRate}}**
 >当日核销 **{{.Pay.Qty}}** 笔，共 **{{.Pay.Total | wan}}** 万元
 {{- if .Gm.InTotal }}
 >营业期间总客流 **{{.Gm.InTotal}}** 人次（入）
@@ -71,6 +70,7 @@ const summaryTpl = `
 {{ range .Gr.Table -}}
 | {{.Ym}} | {{.Fee0 | wan}} | {{.Fee1 | wan}} | **{{.Rate | rate}}** |
 {{ end }}
+>{{ .Yestoday.Year }} 年度，已出账金额（总应收）**{{.Fee.T9 | wan}}** 万元，当前欠款 **{{.Fee.T7 | wan}}** 万元，到期已收 **{{ .Fee.T8 | wan }}** 万元，收缴率为 **{{ .Fee | yearRecvRate}}**
 `
 
 func SummaryTpl() *template.Template {
