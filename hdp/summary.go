@@ -102,7 +102,7 @@ func (b *Summary) DoRun(ctx context.Context, param SummaryParam) (SummaryOutline
 	outline.Fee, _ = b.DBx.FeeAgg(param.StoreCode, dt)
 	outline.Pay, _ = b.DBx.PaymentAgg(param.StoreCode, dt)
 	outline.Sale, _ = b.DBx.SaleAgg(param.StoreCode, dt)
-	outline.Gm, _ = b.DBx.GmEntry2(param.StoreCode, yestoday)
+	outline.Gm, _ = b.DBx.GmEntry(param.StoreCode, yestoday)
 	gg, _ := b.DBx.GatherAgg(param.StoreCode)
 	outline.Gr = gr(gg)
 	outline.Holiday = b.Holidays.Find(yestoday)

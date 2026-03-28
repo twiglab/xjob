@@ -1,7 +1,6 @@
 package hdp
 
 import (
-	"fmt"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -43,29 +42,22 @@ func (s *DBx) FeeAgg(code, dt string) (r FeeRecord, err error) {
 	return
 }
 
-func (s *DBx) GmEntry(code, dt string) (r GmRecord, err error) {
-	pk := code + "-" + dt + "-in"
-	err = s.db.Get(&r, summary_g_gm_entry_sql, pk)
-	return
-}
-
-func (s *DBx) GmEntry2(code string, yestoday time.Time) (r GmRecord, err error) {
+func (s *DBx) GmEntry(code string, yestoday time.Time) (r GmRecord, err error) {
 	var rs []GmRecord
 
 	pkNow := code + "-" + pfsdk.DT(yestoday) + "-in"
 	last := yestoday.Add(-7 * 24 * time.Hour)
 	pkLast := code + "-" + pfsdk.DT(last) + "-in"
 
-	err = s.db.Select(&rs, summary_g_gm_entry_sql_2, pkNow, pkLast)
-	switch len(rs) {
-	case 1:
-		r = rs[0]
-	case 2:
-		r = rs[0]
-		r.InTotalLast = rs[1].InTotal
+	if err = s.db.Select(&rs, summary_g_gm_entry_sql, pkNow, pkLast); err == nil {
+		switch len(rs) {
+		case 1:
+			r = rs[0]
+		case 2:
+			r = rs[0]
+			r.InTotalLast = rs[1].InTotal
+		}
 	}
-
-	fmt.Println(r)
 	return
 }
 
