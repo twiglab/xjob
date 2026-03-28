@@ -61,7 +61,7 @@ const summaryTpl = `
 >**{{ .Sale.Cnt }}** 个商户，上报 **{{ .Sale.Qty }}** 单，销售额 **{{ .Sale.Total | wan }}** 万元
 >当日核销 **{{.Pay.Qty}}** 笔，共 **{{.Pay.Total | wan}}** 万元
 {{- if .Gm.InTotal }}
->营业期间总客流 **{{.Gm.InTotal}}** 人次（入）
+>营业期间总客流 **{{.Gm.InTotal}}** 人次（入）{{- if .Gm.InTotalLast }} 上周同期 **{{.Gm.InTotalLast}}** {{end}} 人次
 {{ end }}
 
 ## 前12个月收缴率（单位：万元）

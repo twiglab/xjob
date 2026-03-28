@@ -37,9 +37,10 @@ type FeeRecord struct {
 }
 
 type GmRecord struct {
-	StoreCode string `db:"store_code"`
-	StoreName string `db:"store_name"`
-	InTotal   int    `db:"in_total"`
+	StoreCode   string `db:"store_code"`
+	StoreName   string `db:"store_name"`
+	InTotal     int    `db:"in_total"`
+	InTotalLast int    `db:"-"`
 }
 
 // dwm_base_fee

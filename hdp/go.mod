@@ -8,6 +8,7 @@ require (
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/spf13/cobra v1.10.1
 	github.com/spf13/viper v1.21.0
+	github.com/twiglab/xjob v0.0.0-00010101000000-000000000000
 	github.com/xen0n/go-workwx/v2 v2.0.0-alpha.1
 )
 
@@ -28,3 +29,5 @@ require (
 	golang.org/x/sys v0.39.0 // indirect
 	golang.org/x/text v0.32.0 // indirect
 )
+
+replace github.com/twiglab/xjob => ../
