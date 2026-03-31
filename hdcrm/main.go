@@ -16,8 +16,6 @@ select
 	a.storeName     as store_name,
 	a.serialNumber  as seria_number ,
 	a.signboard     as sign_board,
--- 	a.beginDate     as begin_date,
--- 	a.endDate       as end_date,
 	a.POSITIONCODES as pos_code ,
 	a.positionType  as pos_type,
 	a.floorName     as floor_name,
@@ -26,15 +24,13 @@ select
 from
 	dws.dwd_contract a
 where
-	a.storeCode = '1006'
+	a.storeCode = '1006' and a.endDate >  CURDATE()  and beginDate <  CURDATE()
 `
 
 type Data struct {
 	StoreName   string `json:"store_name" db:"store_name"`
 	SeriaNumber string `json:"seria_number" db:"seria_number"`
 	SignBoard   string `json:"sign_board" db:"sign_board"`
-	//	BeginDate   time.Time `json:"begin_date" db:"begin_date"`
-	//	EndDate     time.Time `json:"end_date" db:"end_date"`
 	PosCode     string `json:"pos_code" db:"pos_code"`
 	PosType     string `json:"pos_type" db:"pos_type"`
 	FloorName   string `json:"floor_name" db:"floor_name"`
