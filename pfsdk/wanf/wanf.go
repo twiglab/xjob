@@ -1,5 +1,8 @@
 package wanf
 
+// 云平台功能介绍及API文档：
+// https://people.wanf.life/helper-reference#quick1
+
 const (
 	SizeHour  = "hour"
 	SizeDay   = "day"
