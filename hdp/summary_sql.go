@@ -26,7 +26,7 @@ select
 from
 	dwm_base_fee
 where
-	ym > date_format(DATE_SUB(CURDATE(), INTERVAL 12 MONTH), '%Y%m') and ym <= date_format(CURDATE(), '%Y%m')
+	ym > date_format(DATE_SUB(CURDATE(), INTERVAL 15 MONTH), '%Y%m') and ym <= date_format(CURDATE(), '%Y%m')
 	and storecode = ?
 group by storeCode,  ym, x_is_payment
 order by ym, x_is_payment
