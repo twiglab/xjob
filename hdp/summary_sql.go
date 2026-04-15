@@ -14,7 +14,7 @@ select store_code, store_name, t7, t8, t9 from ads_fee_agg_per_day where pk = ?
 `
 
 	summary_g_gm_entry_sql = `
-select store_code, store_name, in_total from g_flow_entry where pk in (?, ?) order by pk desc
+select store_code, store_name, in_total, pk from g_flow_entry where pk in (?, ?) order by pk desc
 `
 
 	summary_gather_sql = `

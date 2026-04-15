@@ -48,15 +48,21 @@ func (s *DBx) GmEntry(code string, yestoday time.Time) (r GmRecord, err error) {
 	pkNow := code + "-" + pfsdk.DT(yestoday) + "-in"
 	last := yestoday.Add(-7 * 24 * time.Hour)
 	pkLast := code + "-" + pfsdk.DT(last) + "-in"
+	if err = s.db.Select(&rs, summary_g_gm_entry_sql, pkNow, pkLast); err != nil {
+		return
+	}
 
-	if err = s.db.Select(&rs, summary_g_gm_entry_sql, pkNow, pkLast); err == nil {
-		switch len(rs) {
-		case 1:
-			r = rs[0]
-		case 2:
-			r = rs[0]
-			r.InTotalLast = rs[1].InTotal
+	switch len(rs) {
+	case 1:
+		r = rs[0]
+		if r.Pk == pkLast {
+			// 当前的没取到，取到是上次的（7天前的)
+			r.InTotal = 0
+			r.InTotalLast = rs[0].InTotal
 		}
+	case 2:
+		r = rs[0]
+		r.InTotalLast = rs[1].InTotal
 	}
 	return
 }
