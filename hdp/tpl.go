@@ -57,7 +57,7 @@ func holiday(h Holiday) string {
 }
 
 const summaryTpl = `
-# {{ .Param.StoreName }} 运营日报 {{ .Yestoday.Format "2006.01.02" }} {{ .Yestoday | weekday }} {{.Holiday | holiday}}
+# {{ .Param.StoreName }}（{{ .Param.StoreCode }}）运营日报 {{ .Yestoday.Format "2006.01.02" }} {{ .Yestoday | weekday }} {{.Holiday | holiday}}
 >**{{ .Sale.Cnt }}** 个商户，上报 **{{ .Sale.Qty }}** 单，销售额 **{{ .Sale.Total | wan }}** 万元
 >当日核销 **{{.Pay.Qty}}** 笔，共 **{{.Pay.Total | wan}}** 万元
 {{- if .Gm.InTotal }}
