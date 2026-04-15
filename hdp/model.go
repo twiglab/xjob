@@ -64,5 +64,8 @@ func (g *GatherItem) Total() float64 {
 }
 
 func (g *GatherItem) Rate() float64 {
-	return g.Fee1 / (g.Fee0 + g.Fee1)
+	if g.Total() != 0 {
+		return g.Fee1 / g.Total()
+	}
+	return 0
 }
