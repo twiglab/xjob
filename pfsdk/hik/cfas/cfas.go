@@ -2,6 +2,14 @@ package cfas
 
 import "time"
 
+const (
+	MINUTELY = "minutely"
+	hOURLY   = "hourly"
+	DAILY    = "daily"
+	MONTHLY  = "monthly"
+	YEARLY   = "yearly"
+)
+
 type Rtn[T any] struct {
 	Code string `json:"code"`
 	Msg  string `json:"msg"`
@@ -38,7 +46,10 @@ type PassengerFlowIn struct {
 }
 
 type PassengerFlowOut struct {
+	// StatTime string `json:"statTime"`
+
 	GroupID string `json:"groupId"`
+	// GroupName string `json:"groupName"`
 
 	FlowInNum  int     `json:"flowInNum"`
 	FlowOutNum int     `json:"flowOutNum"`

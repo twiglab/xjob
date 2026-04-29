@@ -47,7 +47,7 @@ func (b *HikJob) Run(ctx context.Context, task *xxl.Task) error {
 }
 
 func Collect(ctx context.Context, start, end time.Time, c *cfas.Client, ids string) (in int, out int, keep int, err error) {
-	pf := cfas.PassengerFlowIn{IDs: ids, Granularity: "minutely", StartTime: start, EndTime: end}
+	pf := cfas.PassengerFlowIn{IDs: ids, Granularity: cfas.MINUTELY, StartTime: start, EndTime: end}
 	var pfr cfas.PassengerFlowRtn
 	pfr, err = c.PassengerFlow(ctx, pf)
 	if err != nil {
