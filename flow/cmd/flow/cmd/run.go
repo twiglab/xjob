@@ -40,7 +40,7 @@ func run() error {
 		DBx: dbx(),
 	}
 
-	var push hik.CfasPushBot
+	var push hik.CfasPushBot = hik.NewCfasPushBot()
 	exec.RegTask(j.Name(), task(j))
 	exec.RegTask(push.Name(), task(push))
 

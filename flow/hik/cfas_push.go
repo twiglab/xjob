@@ -2,7 +2,8 @@ package hik
 
 import (
 	"context"
-	"fmt"
+	"strings"
+	"text/template"
 	"time"
 
 	"github.com/it512/xxl-job-exec"
@@ -11,12 +12,38 @@ import (
 	"github.com/xen0n/go-workwx/v2"
 )
 
-type CfasPushBot struct {
+type Outline struct {
+	Now       time.Time
+	StoreName string
+	StoreCode string
+
+	GroupBy *GroupBy
 }
+
+const SummaryTpl = `
+# {{ .StoreName }}（{{ .StoreCode }}）运营期间客流 {{ .Now.Format "2006.01.02 15:04" }}
+{{- $item := .GroupBy.Get "1" }}
+> 全场**{{ $item.In }}** (入)，**{{ $item.Out }}** (出)
+{{- $item := .GroupBy.Get "3" }}
+> 长乐路方向**{{ $item.In }}** (入)，**{{ $item.Out }}** (出)
+{{- $item := .GroupBy.Get "4" }}
+> 箍桶巷方向**{{ $item.In }}** (入)，**{{ $item.Out }}** (出)
+`
 
 type CfasPushBotPatam struct {
 	CfasParam
 	BotKey string `json:"bot_key"`
+}
+
+type CfasPushBot struct {
+	Tpl *template.Template
+}
+
+func NewCfasPushBot() CfasPushBot {
+	tpl, _ := template.New("summary").Parse(SummaryTpl)
+	return CfasPushBot{
+		Tpl: tpl,
+	}
 }
 
 func (b CfasPushBot) Name() string {
@@ -25,6 +52,7 @@ func (b CfasPushBot) Name() string {
 
 func (b CfasPushBot) Run(ctx context.Context, task *xxl.Task) error {
 	var param CfasPushBotPatam
+
 	if err := xxl.TaskJsonParam(task, &param); err != nil {
 		return err
 	}
@@ -33,22 +61,27 @@ func (b CfasPushBot) Run(ctx context.Context, task *xxl.Task) error {
 	wc := workwx.NewWebhookClient(param.BotKey)
 
 	cli := cfas.New(param.Config)
-	in, out, keep, err := Collect(ctx, kt.OpenStart, now, cli, param.IDs)
+
+	pf := cfas.PassengerFlowIn{IDs: param.IDs, Granularity: cfas.MINUTELY, StartTime: kt.OpenStart, EndTime: now}
+	pfr, err := cli.PassengerFlow(ctx, pf)
 	if err != nil {
 		return err
 	}
 
-	if pfsdk.MinPerDay(now) < last {
-		return wc.SendTextMessage(fmt.Sprintf("%s %s 进%d，出%d，在场%d",
-			param.StoreName,
-			pfsdk.DateTime(now),
-			in, out, keep), nil)
+	groupBy := GroupBySum(pfr.Data.List)
+
+	var outline = Outline{
+		GroupBy:   groupBy,
+		Now:       now,
+		StoreName: param.StoreName,
+		StoreCode: param.StoreCode,
 	}
 
-	return wc.SendTextMessage(fmt.Sprintf("%s %s 总客流%d（入）",
-		param.StoreName,
-		pfsdk.DateOnly(now),
-		in), nil)
-}
+	var sb strings.Builder
+	sb.Grow(2048)
+	if err := b.Tpl.Execute(&sb, outline); err != nil {
+		return err
+	}
 
-const last = 22 * 60
+	return wc.SendMarkdownV2Message(sb.String())
+}
