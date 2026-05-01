@@ -15,6 +15,9 @@ type GroupByItem struct {
 	In  int
 	Out int
 }
+func (g GroupByItem) Keep() int {
+	return g.In - g.Out
+}
 
 type GroupBy struct {
 	m map[string]*GroupByItem

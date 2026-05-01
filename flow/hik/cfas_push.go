@@ -23,7 +23,7 @@ type Outline struct {
 const SummaryTpl = `
 # {{ .StoreName }}（{{ .StoreCode }}）运营期间客流 {{ .Now.Format "2006.01.02 15:04" }}
 {{- $item := .GroupBy.Get "1" }}
-> 全场**{{ $item.In }}** (入)，**{{ $item.Out }}** (出)
+> 全场**{{ $item.In }}** (入)，**{{ $item.Out }}** (出)，场内人数 **{{ $item.Keep }}**人
 {{- $item := .GroupBy.Get "3" }}
 > 长乐路方向 **{{ $item.In }}** 人，武定门方向**{{ $item.Out }}** 人
 {{- $item := .GroupBy.Get "4" }}
