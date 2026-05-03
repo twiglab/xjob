@@ -12,6 +12,8 @@ import (
 	"github.com/xen0n/go-workwx/v2"
 )
 
+const last = 21 * 60 * 45
+
 type Outline struct {
 	Now       time.Time
 	StoreName string
@@ -20,14 +22,23 @@ type Outline struct {
 	GroupBy *GroupBy
 }
 
+func (o Outline) IsLast() bool {
+	h, m, _ := o.Now.Clock()
+	return (h*60 + m) > last
+}
+
 const SummaryTpl = `
-# {{ .StoreName }}（{{ .StoreCode }}）运营期间客流 {{ .Now.Format "2006.01.02 15:04" }}
+# {{ .StoreName }}（{{ .StoreCode }}）营业期间客流 {{ .Now.Format "2006.01.02 15:04" }}
 {{- $item := .GroupBy.Get "1" }}
+{{- if not .IsLast}}
 > 全场**{{ $item.In }}** (入)，**{{ $item.Out }}** (出)，场内人数 **{{ $item.Keep }}**人
+{{- else}}
+> 全场**{{ $item.In }}** (入)
+{{- end }}
 {{- $item := .GroupBy.Get "3" }}
-> 长乐路方向 **{{ $item.In }}** 人，武定门方向**{{ $item.Out }}** 人
+> 长乐路方向 **{{ $item.In }}** 人，武定门方向 **{{ $item.Out }}** 人
 {{- $item := .GroupBy.Get "4" }}
-> 夫子庙方向 **{{ $item.In }}** 人，老门东方向**{{ $item.Out }}** 人
+> 夫子庙方向 **{{ $item.In }}** 人，老门东方向 **{{ $item.Out }}** 人
 `
 
 type CfasPushBotPatam struct {
