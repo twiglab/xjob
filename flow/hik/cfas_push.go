@@ -12,7 +12,7 @@ import (
 	"github.com/xen0n/go-workwx/v2"
 )
 
-const last = 21 * 60 * 45
+const last = (21 * 60) + 45
 
 type Outline struct {
 	Now       time.Time
