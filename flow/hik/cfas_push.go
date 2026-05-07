@@ -35,10 +35,15 @@ const SummaryTpl = `
 {{- else}}
 > 全场**{{ $item.In }}** (入)
 {{- end }}
-{{- $item := .GroupBy.Get "3" }}
-> 长乐路方向 **{{ $item.In }}** 人，武定门方向 **{{ $item.Out }}** 人
-{{- $item := .GroupBy.Get "4" }}
-> 夫子庙方向 **{{ $item.In }}** 人，老门东方向 **{{ $item.Out }}** 人
+{{- $item := .GroupBy.Get "47" }}
+> 老门东方向 **{{ $item.In }}** 人（入）
+{{- $item := .GroupBy.Get "46" }}
+> 三七八巷方向 **{{ $item.In }}** 人（入）
+{{- $item := .GroupBy.Get "44" }}
+> 夫子庙方向 **{{ $item.In }}** 人（入）
+{{- $item := .GroupBy.Get "45" }}
+> 长乐路方向 **{{ $item.In }}** 人（入）
+
 `
 
 type CfasPushBotPatam struct {
