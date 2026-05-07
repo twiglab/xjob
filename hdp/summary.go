@@ -46,6 +46,10 @@ func (g GatherRate) Table() []*GatherItem {
 	)
 }
 
+func (g GatherRate) Size() int {
+	return len(g.Gr)
+}
+
 func gr(grs []GatherRecord) GatherRate {
 	gm := make(map[string]*GatherItem)
 
@@ -66,7 +70,6 @@ func gr(grs []GatherRecord) GatherRate {
 			gm[gr.Ym] = gi
 		}
 	}
-
 	return GatherRate{Gr: gm}
 }
 

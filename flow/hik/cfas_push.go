@@ -43,7 +43,6 @@ const SummaryTpl = `
 > 夫子庙方向 **{{ $item.In }}** 人（入）
 {{- $item := .GroupBy.Get "45" }}
 > 长乐路方向 **{{ $item.In }}** 人（入）
-
 `
 
 type CfasPushBotPatam struct {
