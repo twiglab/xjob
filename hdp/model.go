@@ -15,7 +15,7 @@ type SaleRecord struct {
 }
 
 func (s SaleRecord) Mean() float64 {
-	if s.Qty < 1 {
+	if s.Qty <= 0 {
 		return 0
 	}
 	return s.Total / s.Qty
