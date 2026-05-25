@@ -3,7 +3,7 @@ module github.com/twiglab/xjob/hdp
 go 1.26.0
 
 require (
-	github.com/go-sql-driver/mysql v1.9.3
+	github.com/go-sql-driver/mysql v1.10.0
 	github.com/it512/xxl-job-exec v0.0.4
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/spf13/cobra v1.10.1

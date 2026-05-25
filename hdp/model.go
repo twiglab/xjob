@@ -14,6 +14,13 @@ type SaleRecord struct {
 	Total float64 `db:"total"`
 }
 
+func (s SaleRecord) Mean() float64 {
+	if s.Qty < 1 {
+		return 0
+	}
+	return s.Total / s.Qty
+}
+
 type PaymentRecord struct {
 	StoreCode string `db:"store_code"`
 	StoreName string `db:"store_name"`

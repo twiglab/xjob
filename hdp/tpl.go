@@ -27,6 +27,10 @@ func weekday(t time.Time) string {
 	return ""
 }
 
+func Yuan(total float64) string {
+	return fmt.Sprintf("%.2f", total)
+}
+
 func wan(total float64) string {
 	return fmt.Sprintf("%.2f", total/10000)
 }
@@ -58,7 +62,7 @@ func holiday(h Holiday) string {
 
 const summaryTpl = `
 # {{ .Param.StoreName }}（{{ .Param.StoreCode }}）运营日报 {{ .Yestoday.Format "2006.01.02" }} {{ .Yestoday | weekday }} {{.Holiday | holiday}}
->**{{ .Sale.Cnt }}** 个商户，上报 **{{ .Sale.Qty }}** 单，销售额 **{{ .Sale.Total | wan }}** 万元
+>**{{ .Sale.Cnt }}** 个商户，上报 **{{ .Sale.Qty }}** 单，销售额 **{{ .Sale.Total | wan }}** 万元，客单价 **{{ .Sale.Mean | yuan }}** 元
 >当日核销 **{{.Pay.Qty}}** 笔，共 **{{.Pay.Total | wan}}** 万元
 {{- if .Gm.InTotal }}
 >营业期间总客流 **{{.Gm.InTotal}}** 人次（入）{{- if .Gm.InTotalLast }} 上周同期 **{{.Gm.InTotalLast}}** {{end}} 人次
@@ -81,6 +85,7 @@ func SummaryTpl() *template.Template {
 			"yearRecvRate": yearRecvRate,
 			"rate":         rate,
 			"holiday":      holiday,
+			"yuan":         Yuan,
 		}).Parse(summaryTpl)
 	return tpl
 }
